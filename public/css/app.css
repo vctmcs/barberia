@@ -1,0 +1,55 @@
+/*
+ * Hoja de estilos base. El tema visual completo (paleta neon,
+ * tipografias, degradados de atardecer) se agrega en la entrega
+ * de layout; aqui solo lo minimo para la pantalla de prueba.
+ */
+
+:root {
+    --bg: #12061f;
+    --panel: #1d0b33;
+    --pink: #ff2e88;
+    --cyan: #19e6ff;
+    --text: #f5e9ff;
+    --muted: #a58fc2;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.center-screen {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--pink);
+    padding: 2rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 0 24px rgba(255, 46, 136, .35);
+}
+
+.neon-title {
+    margin: 0 0 1rem;
+    color: var(--pink);
+    text-shadow: 0 0 8px var(--pink);
+}
+
+.muted { color: var(--muted); }
+
+.btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: .6rem 1.4rem;
+    color: var(--cyan);
+    border: 1px solid var(--cyan);
+    text-decoration: none;
+}

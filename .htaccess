@@ -1,0 +1,23 @@
+# Todas las peticiones pasan por index.php, excepto archivos reales
+# dentro de public/ (css, js, imagenes).
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear carpetas internas
+    RewriteRule ^(app|config|database|storage|vendor|cron)(/|$) - [F,L]
+
+    # Bloquear archivos ocultos y de configuracion
+    RewriteRule (^|/)\. - [F,L]
+    RewriteRule ^(composer\.(json|lock)|README\.md)$ - [F,L]
+
+    # Servir directamente archivos existentes de public/
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^public/ - [L]
+
+    # Todo lo demas va al front controller
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

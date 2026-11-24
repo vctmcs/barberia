@@ -1,0 +1,11 @@
+{
+    "name": "victor/barberia",
+    "description": "Aplicacion web de seguimiento de clientes para barberia y peluqueria en PHP sin framework.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

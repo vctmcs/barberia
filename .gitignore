@@ -1,0 +1,21 @@
+# Configuracion con credenciales
+/config/config.php
+
+# Dependencias de Composer
+/vendor/
+
+# Archivos generados en ejecucion
+/storage/uploads/**/*
+!/storage/uploads/**/
+!/storage/uploads/**/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/*.lock
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log
