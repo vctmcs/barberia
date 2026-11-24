@@ -24,6 +24,21 @@ $router = new App\Core\Router();
 
 require BASE_PATH . '/config/routes.php';
 
+/*
+ * Recordatorios por correo: se revisan al terminar la peticion, despues
+ * de entregar la respuesta (si el servidor lo permite), para no hacer
+ * esperar al visitante. Corre aunque el controlador haga exit().
+ */
+register_shutdown_function(static function (): void {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    }
+    App\Services\Recordatorios::quizas();
+});
+
 $router->dispatch(
     $_SERVER['REQUEST_METHOD'] ?? 'GET',
     $_SERVER['REQUEST_URI'] ?? '/'

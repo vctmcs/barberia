@@ -20,6 +20,9 @@
         <a class="nav__link <?= active('notificaciones') ?>" href="<?= url('/notificaciones') ?>">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 21h4"/></svg>
             Notificaciones
+            <?php if (!empty($avisosCount)): ?>
+            <span class="nav__badge" aria-label="<?= e($avisosCount) ?> pendientes"><?= e($avisosCount > 99 ? '99+' : $avisosCount) ?></span>
+            <?php endif; ?>
         </a>
 
         <?php if ($isAdmin): ?>

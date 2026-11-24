@@ -18,8 +18,10 @@ use App\Controllers\DashboardController;
 use App\Controllers\EmpleadoController;
 use App\Controllers\HistorialController;
 use App\Controllers\HomeController;
+use App\Controllers\NotificacionController;
 use App\Controllers\RecorridoController;
 use App\Controllers\ServicioController;
+use App\Controllers\TareaController;
 
 $router->get('/', [HomeController::class, 'index']);
 
@@ -78,6 +80,12 @@ $router->get('/empleados/{id}/editar', [EmpleadoController::class, 'edit']);
 $router->post('/empleados/{id}/actualizar', [EmpleadoController::class, 'update']);
 $router->post('/empleados/{id}/estado', [EmpleadoController::class, 'toggle']);
 $router->post('/empleados/{id}/eliminar', [EmpleadoController::class, 'destroy']);
+
+/* Notificaciones y recordatorios */
+$router->get('/notificaciones', [NotificacionController::class, 'index']);
+$router->post('/notificaciones/recordatorios', [NotificacionController::class, 'enviar']);
+$router->post('/notificaciones/correo-prueba', [NotificacionController::class, 'prueba']);
+$router->get('/tareas/recordatorios', [TareaController::class, 'recordatorios']);
 
 /* Recorridos guiados */
 $router->post('/recorridos/{clave}', [RecorridoController::class, 'visto']);

@@ -17,7 +17,7 @@ El proyecto está construido en PHP 8 sin framework, con una arquitectura MVC pr
 | Base de datos | SQLite 3 |
 | Frontend | HTML, CSS y JavaScript sin librerías de interfaz |
 | Calendario | FullCalendar |
-| Correo | PHPMailer con SMTP externo |
+| Correo | PHPMailer 6 (incluido en `lib/`) con SMTP externo |
 | Hosting de destino | InfinityFree (Apache) |
 
 ## Roles
@@ -33,7 +33,7 @@ El proyecto está construido en PHP 8 sin framework, con una arquitectura MVC pr
 - **Agenda**: calendario con FullCalendar por mes, semana, día o lista, filtrado por estilista y con su horario sombreado. Al agendar se sugieren los horarios libres donde cabe el servicio completo; el sistema impide citas fuera del turno del estilista o que se empalmen con otra del estilista o del cliente. Las citas programadas se reprograman arrastrándolas y cambian de estado entre programada, atendida, cancelada y no asistió.
 - **Historial del cliente**: al marcar una cita como atendida se registra la fórmula de color o los productos usados, observaciones y fotos de antes y después (en el celular abre la cámara). La ficha del cliente muestra la línea de tiempo con un comparador deslizable de antes y después, y destaca la última fórmula de color; al registrar un nuevo color se puede partir de ella. También se pueden registrar servicios que no se agendaron.
 - **Recordatorios**: correo automático 24 horas antes de la cita y enlace de WhatsApp con mensaje prellenado y editable, que queda registrado en la cita.
-- **Notificaciones internas**: citas del día, clientes que no regresan desde hace varias semanas y cumpleaños.
+- **Notificaciones internas**: citas que faltan hoy, citas pasadas sin cerrar, servicios atendidos sin registrar en el historial, cumpleaños de los próximos 7 días (con felicitación por WhatsApp) y clientes que no regresan desde hace varias semanas (con invitación por WhatsApp o botón para agendar). El menú muestra un contador con lo que requiere acción.
 - **Dashboard**: citas del día, ingresos del mes y servicios más solicitados.
 - **Recorrido guiado**: en cada sección donde se capturan o consultan datos, un recorrido paso a paso se abre la primera vez que el usuario entra. Se puede saltar y volver a ver desde el botón "Ver recorrido". Lo que cada usuario ya vio se guarda en la base de datos.
 
@@ -62,6 +62,7 @@ barberia/
 │   ├── sitio.php          Contenido de la página pública
 │   └── routes.php         Tabla de rutas
 ├── cron/                  Scripts de tareas programadas
+├── lib/                   PHPMailer incluido (sin Composer)
 ├── database/              Esquema SQL, datos de prueba e instalador
 ├── public/                CSS, JavaScript, fuentes e imágenes
 └── storage/               Fotografias subidas y logs (fuera del repositorio)
@@ -71,7 +72,7 @@ Las vistas solo contienen HTML con impresión de variables; toda la lógica vive
 
 ## Instalación local
 
-Requisitos: PHP 8.1 o superior con las extensiones `pdo_sqlite` y `fileinfo`, y Composer. No se necesita servidor de base de datos.
+Requisitos: PHP 8.1 o superior con las extensiones `pdo_sqlite`, `fileinfo`, `openssl` y, de preferencia, `gd`. No se necesita servidor de base de datos ni Composer: PHPMailer viene incluido.
 
 1. Clonar el repositorio:
 
@@ -80,19 +81,13 @@ Requisitos: PHP 8.1 o superior con las extensiones `pdo_sqlite` y `fileinfo`, y 
    cd barberia
    ```
 
-2. Instalar dependencias:
-
-   ```bash
-   composer install
-   ```
-
-3. Copiar la configuración y ajustar la URL base y el SMTP:
+2. Copiar la configuración y ajustar la URL base y el SMTP:
 
    ```bash
    cp config/config.example.php config/config.php
    ```
 
-4. Crear la base de datos con datos de prueba:
+3. Crear la base de datos con datos de prueba:
 
    ```bash
    php database/instalar.php
@@ -100,13 +95,13 @@ Requisitos: PHP 8.1 o superior con las extensiones `pdo_sqlite` y `fileinfo`, y 
 
    Opciones: `--vacia` crea solo el esquema y un administrador; `--forzar` borra la base existente y la vuelve a crear.
 
-5. Levantar el servidor integrado de PHP:
+4. Levantar el servidor integrado de PHP:
 
    ```bash
    php -S localhost:8000 index.php
    ```
 
-6. Abrir `http://localhost:8000` para ver la página pública. El panel está en `http://localhost:8000/login`; entrar con alguno de los usuarios de prueba (contraseña `barberia123`):
+5. Abrir `http://localhost:8000` para ver la página pública. El panel está en `http://localhost:8000/login`; entrar con alguno de los usuarios de prueba (contraseña `barberia123`):
 
    | Correo | Rol |
    | --- | --- |
@@ -117,26 +112,39 @@ Requisitos: PHP 8.1 o superior con las extensiones `pdo_sqlite` y `fileinfo`, y 
 
 ## Despliegue en InfinityFree
 
-1. Ejecutar `composer install --no-dev` en local para generar la carpeta `vendor/`.
-2. Crear la base en local con `php database/instalar.php --vacia` (o con datos de prueba si es una demo).
-3. Subir todo el contenido del proyecto a `htdocs/` por FTP, incluyendo `vendor/`, `config/config.php` y `database/barberia.sqlite`.
-4. Ajustar `app.url` y `app.debug = false` en `config/config.php`.
-5. Dar permisos de escritura a `database/`, `storage/uploads/` y `storage/logs/`. SQLite necesita escribir en la carpeta que contiene el archivo, no solo en el archivo.
+1. Crear la base en local con `php database/instalar.php --vacia` (o con datos de prueba si es una demo).
+2. Subir todo el contenido del proyecto a `htdocs/` por FTP, incluyendo `config/config.php` y `database/barberia.sqlite`.
+3. Ajustar `app.url` y `app.debug = false` en `config/config.php`.
+4. Dar permisos de escritura a `database/`, `storage/uploads/` y `storage/logs/`. SQLite necesita escribir en la carpeta que contiene el archivo, no solo en el archivo.
 
-El archivo `.htaccess` bloquea el acceso web a `app/`, `config/`, `database/`, `storage/`, `vendor/` y `cron/`, de modo que la base de datos y la configuración no se pueden descargar desde el navegador.
+El archivo `.htaccess` bloquea el acceso web a `app/`, `config/`, `database/`, `storage/`, `lib/`, `vendor/` y `cron/`, de modo que la base de datos y la configuración no se pueden descargar desde el navegador.
 
-### Recordatorios en hosting gratuito
+### Recordatorios por correo
 
-El plan gratuito de InfinityFree no ofrece tareas programadas ni servidor de correo propio, y bloquea las peticiones de servicios externos de cron. Por eso el sistema usa dos mecanismos:
+El recordatorio se envía automáticamente 24 horas antes de cada cita (configurable en `reminders.hours_before`) a los clientes que tienen correo. Si un envío falla, se reintenta una hora después.
 
-- **Disparo por actividad**: cada vez que un usuario navega por el sistema se revisan las citas pendientes de recordatorio, como máximo una vez cada cierto número de minutos (configurable). Las visitas normales del personal mantienen los recordatorios al día.
-- **Script de cron**: `cron/recordatorios.php` puede ejecutarse por línea de comandos en cualquier servidor con cron real.
+**Configurar Gmail**
 
-El correo se envía mediante SMTP externo (por ejemplo Gmail con contraseña de aplicación).
+1. Activar la verificación en dos pasos en la cuenta de Google.
+2. Crear una contraseña de aplicación en `https://myaccount.google.com/apppasswords`.
+3. Llenar la sección `mail` de `config/config.php`: `host` smtp.gmail.com, `port` 587, `encryption` tls, el correo completo en `username` y `from_email`, y la contraseña de aplicación de 16 letras (sin espacios) en `password`.
+4. En el panel, en Notificaciones, usar "Enviar prueba" para confirmar que funciona.
+
+**Cómo se dispara el envío**
+
+El plan gratuito de InfinityFree no ofrece tareas programadas y bloquea los servicios externos de cron. Por eso hay tres mecanismos:
+
+- **Por actividad (InfinityFree)**: al terminar cualquier visita al sitio, público o panel, se revisan las citas pendientes como máximo una vez cada `reminders.check_interval` minutos. Un candado de archivo evita envíos duplicados si llegan dos visitas a la vez.
+- **Línea de comandos**: `php cron/recordatorios.php`, para un servidor con cron real.
+- **URL con token**: `/tareas/recordatorios?token=...` con el valor de `reminders.cron_token`, para servicios externos de cron en hostings que los permitan.
+
+El panel de Notificaciones muestra la cola, los últimos envíos con su error si fallaron y un botón para enviar los pendientes en ese momento.
 
 ## Créditos
 
 FullCalendar 6 (licencia MIT), incluido en `public/vendor/fullcalendar/`.
+
+PHPMailer 6 (licencia LGPL 2.1), incluido en `lib/PHPMailer/`.
 
 Tipografías Mr Dafoe y Barlow, bajo licencia SIL Open Font License 1.1, incluidas en `public/fonts/`.
 

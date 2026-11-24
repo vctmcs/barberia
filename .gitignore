@@ -17,6 +17,7 @@
 /storage/logs/*
 !/storage/logs/.gitkeep
 /storage/*.lock
+/storage/*.json
 
 # Sistema y editores
 .DS_Store

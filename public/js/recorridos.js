@@ -32,6 +32,16 @@
             { el: '.nav', title: 'Secciones', text: 'Desde aquí llegas a la agenda, a los clientes y, si eres administrador, a servicios y empleados.' },
             REPLAY
         ],
+        'notificaciones': [
+            { el: '[data-tour-step="hoy"]', title: 'Para hoy', text: 'Las citas que faltan por atender hoy. Toca una para abrirla.' },
+            { el: '[data-tour-step="cerrar"]', title: 'Por cerrar', text: 'Citas cuya hora ya pasó y siguen como programadas. Ábrelas y marca si se atendieron o no asistieron.' },
+            { el: '[data-tour-step="historial"]', title: 'Sin registrar', text: 'Servicios atendidos a los que les falta la fórmula o las fotos.' },
+            { el: '[data-tour-step="cumple"]', title: 'Cumpleaños', text: 'Quién cumple esta semana. El botón abre WhatsApp con una felicitación lista para enviar.' },
+            { el: '[data-tour-step="inactivos"]', title: 'Clientes que no regresan', text: 'Escríbeles para invitarlos de nuevo o agéndales directamente.' },
+            { el: '[data-tour-step="correo"]', title: 'Recordatorios por correo', text: 'Se envían solos un día antes de cada cita. Aquí ves la cola, los últimos envíos y puedes mandar una prueba.' },
+            { el: '.nav__badge', title: 'Contador', text: 'Este número suma lo que requiere acción: citas por cerrar, servicios sin registrar y cumpleaños de hoy.' },
+            REPLAY
+        ],
         'agenda': [
             { el: '.page-head .btn--primary', title: 'Agendar', text: 'Abre el formulario de cita. También puedes tocar directamente un espacio libre del calendario.' },
             { el: '[data-tour-step="filtro"]', title: 'Ver por estilista', text: 'Muestra la agenda de todo el equipo o solo la de una persona; las zonas claras son su horario de trabajo.' },

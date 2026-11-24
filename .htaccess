@@ -7,7 +7,7 @@ Options -Indexes
     RewriteEngine On
 
     # Bloquear carpetas internas
-    RewriteRule ^(app|config|database|storage|vendor|cron)(/|$) - [F,L]
+    RewriteRule ^(app|config|database|storage|vendor|cron|lib)(/|$) - [F,L]
 
     # Bloquear archivos ocultos y de configuracion
     RewriteRule (^|/)\. - [F,L]

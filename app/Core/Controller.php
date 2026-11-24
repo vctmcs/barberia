@@ -16,6 +16,9 @@ abstract class Controller
         $data['csrf']    = Session::csrfToken();
         $data['authUser'] = Auth::user();
         $data['isAdmin'] = Auth::isAdmin();
+        if ($layout === 'layouts/main' && Auth::check()) {
+            $data['avisosCount'] = (new \App\Services\Avisos(Auth::isAdmin() ? null : Auth::empleadoId()))->conteo();
+        }
         $data['old']     = Session::get('_old', []);
         $data['errors']  = Session::get('_errors', []);
 
