@@ -31,7 +31,7 @@ El proyecto está construido en PHP 8 sin framework, con una arquitectura MVC pr
 - **Servicios**: cortes, tintes, tratamientos y barba, con precio y duración estimada.
 - **Empleados**: barberos y estilistas con su horario semanal.
 - **Agenda**: calendario con FullCalendar por mes, semana, día o lista, filtrado por estilista y con su horario sombreado. Al agendar se sugieren los horarios libres donde cabe el servicio completo; el sistema impide citas fuera del turno del estilista o que se empalmen con otra del estilista o del cliente. Las citas programadas se reprograman arrastrándolas y cambian de estado entre programada, atendida, cancelada y no asistió.
-- **Historial del cliente**: servicios recibidos, fórmula de tinte y fotografías de antes y después.
+- **Historial del cliente**: al marcar una cita como atendida se registra la fórmula de color o los productos usados, observaciones y fotos de antes y después (en el celular abre la cámara). La ficha del cliente muestra la línea de tiempo con un comparador deslizable de antes y después, y destaca la última fórmula de color; al registrar un nuevo color se puede partir de ella. También se pueden registrar servicios que no se agendaron.
 - **Recordatorios**: correo automático 24 horas antes de la cita y enlace de WhatsApp con mensaje prellenado y editable, que queda registrado en la cita.
 - **Notificaciones internas**: citas del día, clientes que no regresan desde hace varias semanas y cumpleaños.
 - **Dashboard**: citas del día, ingresos del mes y servicios más solicitados.

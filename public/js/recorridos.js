@@ -52,6 +52,7 @@
         'cita-detalle': [
             { el: '[data-tour-step="resumen"]', title: 'La cita', text: 'Fecha, horario, servicio, quién atiende y cuánto se cobra.' },
             { el: '[data-tour-step="estado"]', title: 'Estado', text: 'Cuando llegue la hora márcala como atendida o como no asistió. Cancelarla libera el horario.' },
+            { el: '[data-tour-step="resultado"]', title: 'Resultado', text: 'Una vez atendida, registra aquí la fórmula y las fotos para el historial del cliente.' },
             { el: '[data-tour-step="recordatorio"]', title: 'Recordatorio por WhatsApp', text: 'Abre WhatsApp con el mensaje ya escrito. Puedes ajustarlo antes de enviarlo y queda registrado aquí.' },
             { el: '.client-mini', title: 'El cliente', text: 'Sus preferencias y notas a la mano antes de empezar.' },
             REPLAY
@@ -78,9 +79,20 @@
             { el: '.profile__side .facts', title: 'Datos de contacto', text: 'Teléfono, correo, edad y desde cuándo es cliente.' },
             { el: '.stats--compact', title: 'Resumen', text: 'Cuántas veces ha venido, cuánto ha gastado en total y hace cuánto fue su última visita.' },
             { el: '.profile__main .grid-2', title: 'Preferencias y notas', text: 'Revísalas antes de empezar el servicio.' },
+            { el: '[data-tour-step="formula"]', title: 'Última fórmula de color', text: 'Para que cualquier colorista parta de lo que ya funcionó, sin preguntarle al cliente qué le pusieron.' },
+            { el: '[data-tour-step="historial"]', title: 'Historial', text: 'Cada servicio realizado con su fórmula, observaciones y fotos. Si hay foto de antes y de después, desliza sobre la imagen para compararlas.' },
             { el: '[data-tour-step="citas"]', title: 'Citas', text: 'Todas sus citas, de la más reciente a la más antigua, con quién lo atendió y cuánto pagó.' },
             { el: '.page-actions .btn--primary', title: 'Editar', text: 'Actualiza sus datos o cambia la foto de referencia.' },
             { el: '.profile__actions', title: 'Inactivar', text: 'Si deja de venir, pásalo a inactivos: desaparece de las listas pero su historial se conserva.' },
+            REPLAY
+        ],
+        'historial-form': [
+            { el: '[data-tour-step="resumen"]', title: 'A quién y qué', text: 'El cliente y el servicio que se registra. Si viene de una cita, ya está todo lleno.' },
+            { el: '[data-tour-step="formula"]', title: 'Fórmula o productos', text: 'Tonos, proporciones, oxidante y tiempo. En color, tratamientos y alaciados es lo más valioso del historial.' },
+            { el: '[data-tour-step="ultima"]', title: 'Parte de la anterior', text: 'Si ya tiene una fórmula de color, úsala como base y solo ajusta lo que cambió.' },
+            { el: '.field:has(#observaciones)', title: 'Observaciones', text: 'Cómo llegó y cómo quedó el cabello, y qué le recomendaste.' },
+            { el: '[data-tour-step="fotos"]', title: 'Antes y después', text: 'En el celular abre la cámara directamente. Con las dos fotos, la ficha muestra un comparador deslizable.' },
+            { el: '.form__actions--bar .btn--primary', title: 'Guardar', text: 'Si ahora no hay tiempo, puedes hacerlo después desde la cita.' },
             REPLAY
         ],
         'servicios': [

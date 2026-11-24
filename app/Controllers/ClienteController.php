@@ -9,6 +9,7 @@ use App\Core\Controller;
 use App\Core\Session;
 use App\Core\Validator;
 use App\Models\Cliente;
+use App\Models\Historial;
 use App\Services\Uploader;
 
 /**
@@ -52,6 +53,7 @@ final class ClienteController extends Controller
         $this->requireAuth();
         $cliente = $this->findOr404((int) $id);
         $model = new Cliente();
+        $historial = new Historial();
 
         $this->view('clientes/show', [
             'title'   => $cliente['nombre'],
@@ -59,6 +61,13 @@ final class ClienteController extends Controller
             'cliente' => $cliente,
             'resumen' => $model->resumen((int) $cliente['id']),
             'citas'   => $model->citas((int) $cliente['id']),
+            'historial'     => array_map(fn ($h) => $h + [
+                'antesUrl'   => foto_url($h['foto_antes'], 'historial'),
+                'despuesUrl' => foto_url($h['foto_despues'], 'historial'),
+                'editable'   => Auth::isAdmin() || (int) $h['empleado_id'] === Auth::empleadoId(),
+            ], $historial->porCliente((int) $cliente['id'])),
+            'ultimaFormula' => $historial->ultimaFormula((int) $cliente['id']),
+            'scripts'       => [asset('js/comparador.js')],
             'edad'    => $cliente['fecha_nacimiento']
                 ? (new \DateTime($cliente['fecha_nacimiento']))->diff(new \DateTime('today'))->y
                 : null,
@@ -75,7 +84,7 @@ final class ClienteController extends Controller
             'cliente' => ['activo' => 1],
             'fotoUrl' => null,
             'action'  => url('/clientes'),
-            'scripts' => [asset('js/clientes.js')],
+            'scripts' => [asset('js/fotos.js')],
         ]);
     }
 
@@ -109,7 +118,7 @@ final class ClienteController extends Controller
             'cliente' => $cliente,
             'fotoUrl' => foto_url($cliente['foto'], 'clientes'),
             'action'  => url("/clientes/{$cliente['id']}/actualizar"),
-            'scripts' => [asset('js/clientes.js')],
+            'scripts' => [asset('js/fotos.js')],
         ]);
     }
 

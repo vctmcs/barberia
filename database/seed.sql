@@ -90,3 +90,9 @@ INSERT INTO historial (cliente_id, cita_id, servicio_id, empleado_id, formula_ti
     (1, 12, 2, 1, NULL, 'Como lo pidió.', date('now','localtime','-2 days')),
     (4, 13,13, 3, NULL, 'Puntas abiertas en medios. Se conservó el largo.', date('now','localtime','-30 days')),
     (6, 14, 9, 2, NULL, 'Después del cobrizo, para sellar cutícula.', date('now','localtime','-40 days'));
+
+-- Fotos de ejemplo de antes y despues (instalar.php copia los archivos
+-- de database/demo/ a storage/uploads/historial/)
+UPDATE historial SET foto_antes = 'a1c3e5f7091b2d4f6a8c0e1f.webp', foto_despues = 'b2d4f6081a3c5e7f9b1d3f5a.webp' WHERE cita_id = 2;
+UPDATE historial SET foto_antes = 'c3e5f7092b4d6f8a0c2e4f6b.webp', foto_despues = 'd4f6081a3c5e7f9b1d3f5a7c.webp' WHERE cita_id = 7;
+UPDATE historial SET foto_antes = 'e5f7092b4d6f8a0c2e4f6b8d.webp', foto_despues = 'f6081a3c5e7f9b1d3f5a7c9e.webp' WHERE cita_id = 9;

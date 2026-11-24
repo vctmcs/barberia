@@ -61,6 +61,17 @@ if ($vacia) {
 } else {
     $pdo->exec((string) file_get_contents(__DIR__ . '/seed.sql'));
     echo "Datos de prueba cargados.\n";
+
+    /* Fotos de ejemplo del historial */
+    $destino = BASE_PATH . '/storage/uploads/historial';
+    if (!is_dir($destino)) {
+        mkdir($destino, 0755, true);
+    }
+    $copiadas = 0;
+    foreach (glob(__DIR__ . '/demo/*.webp') ?: [] as $foto) {
+        $copiadas += (int) copy($foto, $destino . '/' . basename($foto));
+    }
+    echo "Fotos de ejemplo copiadas: {$copiadas}\n";
     echo "Usuarios (contrasena barberia123):\n";
     foreach ($pdo->query('SELECT email, rol FROM usuarios ORDER BY id') as $u) {
         echo "  {$u['email']}  ({$u['rol']})\n";

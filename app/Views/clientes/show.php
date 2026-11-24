@@ -78,6 +78,69 @@
             </section>
         </div>
 
+        <?php if ($ultimaFormula): ?>
+        <section class="card last-formula last-formula--profile" data-tour-step="formula">
+            <h2 class="card__title">Última fórmula de color</h2>
+            <p class="card__hint"><?= e(fecha_corta($ultimaFormula['fecha'])) ?>, <?= e($ultimaFormula['servicio']) ?><?= $ultimaFormula['empleado'] ? ' con ' . e($ultimaFormula['empleado']) : '' ?></p>
+            <p class="last-formula__text"><?= nl2br(e($ultimaFormula['formula_tinte'])) ?></p>
+        </section>
+        <?php endif; ?>
+
+        <section class="card" id="historial" data-tour-step="historial">
+            <div class="card__head">
+                <h2 class="card__title">Historial</h2>
+                <a class="btn btn--sm btn--ghost" href="<?= url("/historial/nuevo?cliente={$cliente['id']}") ?>">Registrar servicio</a>
+            </div>
+
+            <?php if (!$historial): ?>
+            <p class="empty">Aún no hay servicios registrados. Se agregan al marcar una cita como atendida o con el botón de arriba.</p>
+            <?php else: ?>
+            <ol class="history">
+                <?php foreach ($historial as $h): ?>
+                <li class="history__item" style="--emp-color: <?= e($h['color'] ?? '#b9a2d6') ?>">
+                    <header class="history__head">
+                        <div>
+                            <p class="history__service"><?= e($h['servicio']) ?></p>
+                            <p class="history__meta"><?= e(fecha_larga($h['fecha'])) ?><?= $h['empleado'] ? ', con ' . e($h['empleado']) : '' ?></p>
+                        </div>
+                        <?php if ($h['editable']): ?>
+                        <a class="btn btn--sm btn--ghost" href="<?= url("/historial/{$h['id']}/editar") ?>">Editar</a>
+                        <?php endif; ?>
+                    </header>
+
+                    <?php if ($h['formula_tinte']): ?>
+                    <div class="formula">
+                        <span class="label-like">Fórmula</span>
+                        <p><?= nl2br(e($h['formula_tinte'])) ?></p>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if ($h['observaciones']): ?>
+                    <p class="history__notes"><?= nl2br(e($h['observaciones'])) ?></p>
+                    <?php endif; ?>
+
+                    <?php if ($h['antesUrl'] && $h['despuesUrl']): ?>
+                    <div class="compare" data-compare>
+                        <img class="compare__img" src="<?= e($h['antesUrl']) ?>" alt="Antes: <?= e($h['servicio']) ?>" loading="lazy">
+                        <img class="compare__img compare__after" src="<?= e($h['despuesUrl']) ?>" alt="Después: <?= e($h['servicio']) ?>" loading="lazy">
+                        <span class="compare__tag compare__tag--antes" aria-hidden="true">Antes</span>
+                        <span class="compare__tag compare__tag--despues" aria-hidden="true">Después</span>
+                        <span class="compare__handle" aria-hidden="true"></span>
+                        <input class="compare__range" type="range" min="0" max="100" value="50"
+                               aria-label="Deslizar para comparar antes y después" data-compare-range>
+                    </div>
+                    <?php elseif ($h['antesUrl'] || $h['despuesUrl']): ?>
+                    <figure class="single-photo">
+                        <img src="<?= e($h['antesUrl'] ?: $h['despuesUrl']) ?>" alt="<?= $h['antesUrl'] ? 'Antes' : 'Después' ?>: <?= e($h['servicio']) ?>" loading="lazy">
+                        <figcaption class="label-like"><?= $h['antesUrl'] ? 'Antes' : 'Después' ?></figcaption>
+                    </figure>
+                    <?php endif; ?>
+                </li>
+                <?php endforeach; ?>
+            </ol>
+            <?php endif; ?>
+        </section>
+
         <section class="card" data-tour-step="citas">
             <h2 class="card__title">Citas</h2>
             <?php if (!$citas): ?>

@@ -64,7 +64,7 @@
             </label>
         </section>
 
-        <section class="card form photo-card">
+        <section class="card form photo-card" data-photo>
             <h2 class="card__title">Foto de referencia</h2>
             <p class="card__hint">El corte o el color que quiere conservar. JPG, PNG o WebP de hasta 4 MB.</p>
 

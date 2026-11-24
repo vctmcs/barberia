@@ -174,6 +174,7 @@ final class CitaController extends Controller
             'tieneTelefono'  => !empty($cita['cliente_telefono']),
             'recordatorios'  => $recordatorios,
             'fotoCliente'    => foto_url($cita['cliente_foto'], 'clientes'),
+            'historial'      => (new \App\Models\Historial())->porCita((int) $cita['id']),
         ]);
     }
 
@@ -263,6 +264,11 @@ final class CitaController extends Controller
             'no_asistio' => 'Se registró que el cliente no asistió.',
             'programada' => 'La cita vuelve a estar programada.',
         ];
+        if ($nuevo === 'atendida' && !(new \App\Models\Historial())->porCita((int) $cita['id'])) {
+            Session::flash('success', 'Cita atendida. Registra la fórmula y las fotos mientras lo tienes fresco, o hazlo después desde la cita.');
+            $this->redirect("/historial/nuevo?cita={$cita['id']}");
+        }
+
         Session::flash('success', $mensajes[$nuevo]);
         $this->redirect($volver);
     }

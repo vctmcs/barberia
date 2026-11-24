@@ -16,6 +16,7 @@ use App\Controllers\AuthController;
 use App\Controllers\ClienteController;
 use App\Controllers\DashboardController;
 use App\Controllers\EmpleadoController;
+use App\Controllers\HistorialController;
 use App\Controllers\HomeController;
 use App\Controllers\RecorridoController;
 use App\Controllers\ServicioController;
@@ -52,6 +53,13 @@ $router->get('/clientes/{id}/editar', [ClienteController::class, 'edit']);
 $router->post('/clientes/{id}/actualizar', [ClienteController::class, 'update']);
 $router->post('/clientes/{id}/estado', [ClienteController::class, 'toggle']);
 $router->post('/clientes/{id}/eliminar', [ClienteController::class, 'destroy']);
+
+/* Historial del cliente */
+$router->get('/historial/nuevo', [HistorialController::class, 'create']);
+$router->post('/historial', [HistorialController::class, 'store']);
+$router->get('/historial/{id}/editar', [HistorialController::class, 'edit']);
+$router->post('/historial/{id}/actualizar', [HistorialController::class, 'update']);
+$router->post('/historial/{id}/eliminar', [HistorialController::class, 'destroy']);
 
 /* Servicios (solo administrador) */
 $router->get('/servicios', [ServicioController::class, 'index']);

@@ -76,6 +76,24 @@
             </div>
         </section>
 
+        <?php if ($cita['estado'] === 'atendida'): ?>
+        <section class="card result-card" data-tour-step="resultado">
+            <h2 class="card__title">Resultado</h2>
+            <?php if ($historial): ?>
+            <p class="card__hint">Registrado en el historial del cliente<?= $historial['formula_tinte'] ? ', con fórmula' : '' ?><?= ($historial['foto_antes'] || $historial['foto_despues']) ? ' y fotos' : '' ?>.</p>
+            <div class="state-actions">
+                <a class="btn btn--ghost btn--block" href="<?= url("/clientes/{$cita['cliente_id']}#historial") ?>">Ver en el historial</a>
+                <a class="btn btn--block" href="<?= url("/historial/{$historial['id']}/editar") ?>">Editar registro</a>
+            </div>
+            <?php else: ?>
+            <p class="card__hint">Aún no se registra la fórmula ni las fotos de este servicio.</p>
+            <div class="state-actions">
+                <a class="btn btn--primary btn--block" href="<?= url("/historial/nuevo?cita={$cita['id']}") ?>">Registrar resultado</a>
+            </div>
+            <?php endif; ?>
+        </section>
+        <?php endif; ?>
+
         <?php if ($cita['estado'] === 'programada' && !$yaEmpezo): ?>
         <section class="card" data-tour-step="recordatorio">
             <h2 class="card__title">Recordatorio</h2>

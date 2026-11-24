@@ -1198,6 +1198,127 @@ a.timeline__item:hover { background: var(--panel-2); }
 }
 
 /* --------------------------------------------------------------------------
+   Historial del cliente
+   -------------------------------------------------------------------------- */
+
+.card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); flex-wrap: wrap; }
+
+.history { list-style: none; margin: var(--sp-4) 0 0; padding: 0; display: grid; gap: var(--sp-4); }
+.history__item {
+    --emp-color: var(--cyan);
+    display: grid; gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5);
+    background: var(--night-2);
+    border-left: 3px solid var(--emp-color);
+    border-radius: var(--radius-sm);
+}
+.history__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-3); }
+.history__service { font: 700 var(--fs-xl)/1.15 var(--font-cond); }
+.history__meta { color: var(--muted); font-size: var(--fs-sm); }
+.history__meta::first-letter { text-transform: uppercase; }
+.history__notes { max-width: 70ch; }
+
+.formula {
+    padding: var(--sp-3) var(--sp-4);
+    background: rgba(255, 61, 154, .07);
+    border: 1px solid rgba(255, 61, 154, .35);
+    border-radius: var(--radius-sm);
+}
+.formula p { margin-top: 2px; font-weight: 500; }
+
+/* Comparador de antes y despues */
+.compare {
+    --pos: 50%;
+    position: relative;
+    width: min(100%, 420px);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    user-select: none;
+    touch-action: pan-y;
+}
+.compare__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.compare__after { clip-path: inset(0 0 0 var(--pos)); }
+.compare__handle {
+    position: absolute; top: 0; bottom: 0; left: var(--pos);
+    width: 2px; margin-left: -1px;
+    background: var(--cyan);
+    box-shadow: var(--glow-cyan);
+    pointer-events: none;
+}
+.compare__handle::after {
+    content: '';
+    position: absolute; top: 50%; left: 50%;
+    width: 2.4rem; height: 2.4rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    background:
+        linear-gradient(90deg, transparent 30%, var(--cyan) 30% 36%, transparent 36% 64%, var(--cyan) 64% 70%, transparent 70%) center / 60% 30% no-repeat,
+        rgba(26, 11, 46, .85);
+    box-shadow: var(--glow-cyan);
+}
+.compare__tag {
+    position: absolute; top: var(--sp-3);
+    padding: .2rem .55rem;
+    font: 600 var(--fs-xs)/1.3 var(--font-cond);
+    letter-spacing: .03em;
+    background: rgba(26, 11, 46, .8);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+}
+.compare__tag--antes { left: var(--sp-3); }
+.compare__tag--despues { right: var(--sp-3); color: var(--cyan); }
+.compare__range {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+}
+.compare:has(.compare__range:focus-visible) { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.single-photo { margin: 0; width: min(100%, 300px); display: grid; gap: var(--sp-1); }
+.single-photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--line); }
+
+/* Ultima formula */
+.last-formula {
+    display: grid; gap: var(--sp-2); justify-items: start;
+    padding: var(--sp-4);
+    background: rgba(45, 226, 230, .06);
+    border: 1px dashed rgba(45, 226, 230, .5);
+    border-radius: var(--radius-sm);
+}
+.last-formula__text { font: 500 var(--fs-md)/1.5 var(--font-ui); white-space: pre-line; }
+.last-formula--profile { border-style: solid; border-color: rgba(255, 61, 154, .5); background: var(--panel); box-shadow: 0 0 24px rgba(255, 61, 154, .12); }
+.last-formula--profile .last-formula__text { font-size: var(--fs-lg); }
+
+/* Formulario de historial */
+.form-cols--historial { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+
+.record-summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-4); }
+.record-summary__facts { display: flex; flex-wrap: wrap; gap: var(--sp-5); margin: 0; }
+.record-summary__facts dt { font: 600 var(--fs-xs)/1.2 var(--font-cond); color: var(--muted); letter-spacing: .03em; }
+.record-summary__facts dd { margin: 2px 0 0; font-weight: 600; }
+
+.formula-field.is-featured textarea { border-color: rgba(255, 61, 154, .55); box-shadow: 0 0 0 3px rgba(255, 61, 154, .08); }
+.formula-field.is-featured label { color: var(--pink-soft); }
+
+.photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.photo-pair .photo-drop { justify-items: stretch; text-align: center; }
+.photo-pair .photo-drop__btn { justify-self: center; }
+.photo-pair .check { justify-self: center; }
+
+@media (max-width: 1024px) {
+    .form-cols--historial { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .compare { width: 100%; }
+    .record-summary__facts { gap: var(--sp-3) var(--sp-4); }
+}
+
+/* --------------------------------------------------------------------------
    Recorrido guiado
    -------------------------------------------------------------------------- */
 
@@ -1384,6 +1505,7 @@ body::after {
     .login__brand { font-size: 3.2rem; }
     .page-title { font-size: var(--fs-2xl); }
     .timeline__item { grid-template-columns: 3.2rem 1fr; }
+    .timeline__item--wide { grid-template-columns: 5.8rem 1fr; }
     .timeline__item .badge { grid-column: 2; justify-self: start; }
 }
 
