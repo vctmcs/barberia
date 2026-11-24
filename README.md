@@ -30,9 +30,9 @@ El proyecto está construido en PHP 8 sin framework, con una arquitectura MVC pr
 - **Clientes**: datos de contacto, preferencias, notas y fotografía de referencia.
 - **Servicios**: cortes, tintes, tratamientos y barba, con precio y duración estimada.
 - **Empleados**: barberos y estilistas con su horario semanal.
-- **Citas**: agenda por día y por empleado en calendario visual, con estados programada, atendida, cancelada y no asistió.
+- **Agenda**: calendario con FullCalendar por mes, semana, día o lista, filtrado por estilista y con su horario sombreado. Al agendar se sugieren los horarios libres donde cabe el servicio completo; el sistema impide citas fuera del turno del estilista o que se empalmen con otra del estilista o del cliente. Las citas programadas se reprograman arrastrándolas y cambian de estado entre programada, atendida, cancelada y no asistió.
 - **Historial del cliente**: servicios recibidos, fórmula de tinte y fotografías de antes y después.
-- **Recordatorios**: correo automático 24 horas antes de la cita y enlace de WhatsApp con mensaje prellenado.
+- **Recordatorios**: correo automático 24 horas antes de la cita y enlace de WhatsApp con mensaje prellenado y editable, que queda registrado en la cita.
 - **Notificaciones internas**: citas del día, clientes que no regresan desde hace varias semanas y cumpleaños.
 - **Dashboard**: citas del día, ingresos del mes y servicios más solicitados.
 - **Recorrido guiado**: en cada sección donde se capturan o consultan datos, un recorrido paso a paso se abre la primera vez que el usuario entra. Se puede saltar y volver a ver desde el botón "Ver recorrido". Lo que cada usuario ya vio se guarda en la base de datos.
@@ -135,6 +135,8 @@ El plan gratuito de InfinityFree no ofrece tareas programadas ni servidor de cor
 El correo se envía mediante SMTP externo (por ejemplo Gmail con contraseña de aplicación).
 
 ## Créditos
+
+FullCalendar 6 (licencia MIT), incluido en `public/vendor/fullcalendar/`.
 
 Tipografías Mr Dafoe y Barlow, bajo licencia SIL Open Font License 1.1, incluidas en `public/fonts/`.
 

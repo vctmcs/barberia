@@ -14,7 +14,7 @@ final class Recorrido extends Model
 {
     /** Secciones con recorrido: CRUDs y pantallas donde se capturan o consultan datos. */
     public const CLAVES = [
-        'dashboard', 'clientes', 'cliente-form', 'cliente-ficha',
+        'dashboard', 'agenda', 'cita-form', 'cita-detalle', 'clientes', 'cliente-form', 'cliente-ficha',
         'servicios', 'servicio-form', 'empleados', 'empleado-form',
     ];
 

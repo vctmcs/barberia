@@ -85,7 +85,7 @@
             <?php else: ?>
             <ol class="timeline">
                 <?php foreach ($citas as $cita): ?>
-                <li class="timeline__item timeline__item--wide" style="--emp-color: <?= e($cita['color']) ?>">
+                <li><a href="<?= url("/citas/{$cita['id']}") ?>" class="timeline__item timeline__item--wide" style="--emp-color: <?= e($cita['color']) ?>">
                     <time class="timeline__date" datetime="<?= e($cita['fecha_hora']) ?>">
                         <?= e(fecha_corta($cita['fecha_hora'])) ?>
                         <small><?= e(hora($cita['fecha_hora'])) ?></small>
@@ -95,7 +95,7 @@
                         <span>con <?= e($cita['empleado']) ?>, <?= e(dinero($cita['precio'])) ?></span>
                     </div>
                     <span class="badge badge--<?= e($cita['estado']) ?>"><?= e(estado_cita($cita['estado'])) ?></span>
-                </li>
+                </a></li>
                 <?php endforeach; ?>
             </ol>
             <?php endif; ?>

@@ -32,6 +32,30 @@
             { el: '.nav', title: 'Secciones', text: 'Desde aquí llegas a la agenda, a los clientes y, si eres administrador, a servicios y empleados.' },
             REPLAY
         ],
+        'agenda': [
+            { el: '.page-head .btn--primary', title: 'Agendar', text: 'Abre el formulario de cita. También puedes tocar directamente un espacio libre del calendario.' },
+            { el: '[data-tour-step="filtro"]', title: 'Ver por estilista', text: 'Muestra la agenda de todo el equipo o solo la de una persona; las zonas claras son su horario de trabajo.' },
+            { el: '.fc-header-toolbar', title: 'Moverte en el calendario', text: 'Cambia de semana con las flechas y elige ver por mes, semana, día o en lista.' },
+            { el: '[data-tour-step="calendario"]', title: 'Las citas', text: 'Cada color es un estilista. Toca una cita para ver su detalle o arrástrala a otra hora para reprogramarla; si el horario no está libre, regresa a su lugar.' },
+            { el: '.agenda-tools__cancel', title: 'Canceladas', text: 'Por defecto se ocultan para no estorbar. Márcalo para verlas.' },
+            REPLAY
+        ],
+        'cita-form': [
+            { el: '[data-tour-step="cliente"]', title: 'Cliente', text: 'Escribe parte del nombre o del teléfono para filtrar la lista y selecciónalo.' },
+            { el: '.field:has(#servicio_id)', title: 'Servicio', text: 'La duración del servicio define cuánto tiempo ocupa la cita.' },
+            { el: '.field:has(#empleado_id)', title: 'Estilista', text: 'Quién atenderá. Solo se puede agendar dentro de su horario.' },
+            { el: '[data-tour-step="horarios"]', title: 'Horarios libres', text: 'Al elegir servicio, estilista y fecha aparecen los horarios en los que cabe el servicio completo. Toca uno para usarlo.' },
+            { el: '.field:has(#precio)', title: 'Precio', text: 'Si lo dejas vacío se cobra el precio del servicio. Cámbialo si el cabello es muy largo o hay un descuento.' },
+            { el: '.form__actions--bar .btn--primary', title: 'Agendar', text: 'Si el horario ya se ocupó o queda fuera del turno, te dice exactamente con quién choca.' },
+            REPLAY
+        ],
+        'cita-detalle': [
+            { el: '[data-tour-step="resumen"]', title: 'La cita', text: 'Fecha, horario, servicio, quién atiende y cuánto se cobra.' },
+            { el: '[data-tour-step="estado"]', title: 'Estado', text: 'Cuando llegue la hora márcala como atendida o como no asistió. Cancelarla libera el horario.' },
+            { el: '[data-tour-step="recordatorio"]', title: 'Recordatorio por WhatsApp', text: 'Abre WhatsApp con el mensaje ya escrito. Puedes ajustarlo antes de enviarlo y queda registrado aquí.' },
+            { el: '.client-mini', title: 'El cliente', text: 'Sus preferencias y notas a la mano antes de empezar.' },
+            REPLAY
+        ],
         'clientes': [
             { el: '.page-head .btn--primary', title: 'Registrar un cliente', text: 'Empieza aquí cuando llegue alguien nuevo. Solo necesitas su nombre y un teléfono o correo.' },
             { el: '.filters__search', title: 'Buscar', text: 'Escribe parte del nombre, el teléfono o el correo y presiona Filtrar.' },

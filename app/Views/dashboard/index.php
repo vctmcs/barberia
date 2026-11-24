@@ -32,14 +32,14 @@
         <?php else: ?>
         <ol class="timeline">
             <?php foreach ($citas as $cita): ?>
-            <li class="timeline__item" style="--emp-color: <?= e($cita['color']) ?>">
+            <li><a href="<?= url("/citas/{$cita['id']}") ?>" class="timeline__item" style="--emp-color: <?= e($cita['color']) ?>">
                 <time class="timeline__time" datetime="<?= e($cita['fecha_hora']) ?>"><?= e(hora($cita['fecha_hora'])) ?></time>
                 <div class="timeline__body">
                     <strong><?= e($cita['cliente']) ?></strong>
                     <span><?= e($cita['servicio']) ?> con <?= e($cita['empleado']) ?></span>
                 </div>
                 <span class="badge badge--<?= e($cita['estado']) ?>"><?= e(estado_cita($cita['estado'])) ?></span>
-            </li>
+            </a></li>
             <?php endforeach; ?>
         </ol>
         <?php endif; ?>

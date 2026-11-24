@@ -11,6 +11,7 @@
  */
 
 use App\Controllers\ArchivoController;
+use App\Controllers\CitaController;
 use App\Controllers\AuthController;
 use App\Controllers\ClienteController;
 use App\Controllers\DashboardController;
@@ -28,6 +29,19 @@ $router->post('/logout', [AuthController::class, 'logout']);
 
 /* Dashboard */
 $router->get('/dashboard', [DashboardController::class, 'index']);
+
+/* Agenda de citas */
+$router->get('/citas', [CitaController::class, 'index']);
+$router->get('/citas/eventos', [CitaController::class, 'eventos']);
+$router->get('/citas/disponibilidad', [CitaController::class, 'disponibilidad']);
+$router->get('/citas/nueva', [CitaController::class, 'create']);
+$router->post('/citas', [CitaController::class, 'store']);
+$router->get('/citas/{id}', [CitaController::class, 'show']);
+$router->get('/citas/{id}/editar', [CitaController::class, 'edit']);
+$router->post('/citas/{id}/actualizar', [CitaController::class, 'update']);
+$router->post('/citas/{id}/estado', [CitaController::class, 'estado']);
+$router->post('/citas/{id}/mover', [CitaController::class, 'mover']);
+$router->post('/citas/{id}/whatsapp', [CitaController::class, 'whatsapp']);
 
 /* Clientes */
 $router->get('/clientes', [ClienteController::class, 'index']);
