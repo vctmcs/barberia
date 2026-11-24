@@ -1,0 +1,264 @@
+/*
+ * Recorrido guiado por seccion.
+ *
+ * - Se abre solo la primera vez que el usuario entra a una seccion con
+ *   captura o consulta de datos (lo decide el servidor: data-tour-pending).
+ * - Se puede saltar en cualquier momento (boton o tecla Escape).
+ * - Al terminarlo o saltarlo se guarda como visto en el servidor.
+ * - El boton "Ver recorrido" de la barra superior lo vuelve a abrir.
+ *
+ * Cada paso apunta a un selector; si el elemento no existe o no se ve
+ * (por ejemplo, una tabla vacia o el menu oculto en celular), el paso
+ * se omite.
+ */
+(function () {
+    'use strict';
+
+    var body = document.body;
+    var clave = body.dataset.tour;
+    if (!clave) return;
+
+    var REPLAY = {
+        el: '[data-tour-replay]',
+        title: 'Vuelve a verlo cuando quieras',
+        text: 'Este recorrido ya no se abrirá solo. Si lo necesitas otra vez, usa este botón.'
+    };
+
+    var PASOS = {
+        'dashboard': [
+            { el: '.stats', title: 'Tu día en números', text: 'Citas de hoy, lo que se ha cobrado en el mes (solo citas atendidas) y cuántos clientes activos hay. Si entras como estilista, solo ves lo tuyo.' },
+            { el: '[data-tour-step="agenda"]', title: 'Agenda del día', text: 'Las citas de hoy en orden. El color de la orilla es el del estilista y la etiqueta indica si ya se atendió.' },
+            { el: '[data-tour-step="top"]', title: 'Lo que más piden', text: 'Los servicios más solicitados de los últimos 90 días, para saber qué promocionar.' },
+            { el: '.nav', title: 'Secciones', text: 'Desde aquí llegas a la agenda, a los clientes y, si eres administrador, a servicios y empleados.' },
+            REPLAY
+        ],
+        'clientes': [
+            { el: '.page-head .btn--primary', title: 'Registrar un cliente', text: 'Empieza aquí cuando llegue alguien nuevo. Solo necesitas su nombre y un teléfono o correo.' },
+            { el: '.filters__search', title: 'Buscar', text: 'Escribe parte del nombre, el teléfono o el correo y presiona Filtrar.' },
+            { el: '.field:has(#estado)', title: 'Activos e inactivos', text: 'Los clientes que ya no vienen se pasan a inactivos para no perder su historial. Aquí puedes verlos.' },
+            { el: '.table-wrap', title: 'Tu cartera', text: 'Cada fila muestra cuándo vino por última vez y si ya tiene su próxima cita.' },
+            { el: '.table .actions .btn', title: 'Ficha del cliente', text: 'Abre la ficha para ver sus preferencias, notas, foto de referencia y todas sus citas.' },
+            REPLAY
+        ],
+        'cliente-form': [
+            { el: '.field:has(#nombre)', title: 'Nombre completo', text: 'Como lo quieras encontrar después en el buscador.' },
+            { el: '[data-tour-step="contacto"]', title: 'Cómo contactarlo', text: 'Registra al menos uno. El teléfono se usa para el recordatorio por WhatsApp y el correo para el automático.' },
+            { el: '.field:has(#fecha_nacimiento)', title: 'Cumpleaños', text: 'Opcional. Con esta fecha el sistema te avisa cuando se acerque su cumpleaños.' },
+            { el: '.field:has(#preferencias)', title: 'Preferencias', text: 'Cómo le gusta su corte o color. Cualquier compañero que lo atienda lo verá en su ficha.' },
+            { el: '.field:has(#notas)', title: 'Notas internas', text: 'Datos que el cliente no ve, como alergias a productos o pruebas pendientes.' },
+            { el: '.photo-card', title: 'Foto de referencia', text: 'El resultado que quiere conservar. Se guarda en privado: solo el personal con sesión puede verla.' },
+            { el: '.form__actions .btn--primary', title: 'Guardar', text: 'Si falta algo, el formulario te marca en rojo qué corregir.' },
+            REPLAY
+        ],
+        'cliente-ficha': [
+            { el: '.profile__side .facts', title: 'Datos de contacto', text: 'Teléfono, correo, edad y desde cuándo es cliente.' },
+            { el: '.stats--compact', title: 'Resumen', text: 'Cuántas veces ha venido, cuánto ha gastado en total y hace cuánto fue su última visita.' },
+            { el: '.profile__main .grid-2', title: 'Preferencias y notas', text: 'Revísalas antes de empezar el servicio.' },
+            { el: '[data-tour-step="citas"]', title: 'Citas', text: 'Todas sus citas, de la más reciente a la más antigua, con quién lo atendió y cuánto pagó.' },
+            { el: '.page-actions .btn--primary', title: 'Editar', text: 'Actualiza sus datos o cambia la foto de referencia.' },
+            { el: '.profile__actions', title: 'Inactivar', text: 'Si deja de venir, pásalo a inactivos: desaparece de las listas pero su historial se conserva.' },
+            REPLAY
+        ],
+        'servicios': [
+            { el: '.page-head .btn--primary', title: 'Agregar un servicio', text: 'Todo lo que se puede agendar: cortes, color, tratamientos, alaciados y split ender.' },
+            { el: '.filters', title: 'Filtrar', text: 'Busca por nombre o muestra solo un tipo de servicio.' },
+            { el: '.table-wrap', title: 'Precio y duración', text: 'La duración se usa para calcular cuánto ocupa cada cita en la agenda. Los precios activos se publican en la página del negocio.' },
+            { el: '.table .actions', title: 'Desactivar o eliminar', text: 'Un servicio que ya tiene citas no se puede eliminar; desactívalo para que deje de aparecer al agendar y en la página.' },
+            REPLAY
+        ],
+        'servicio-form': [
+            { el: '.field:has(#nombre)', title: 'Nombre', text: 'Así aparecerá en la agenda y en la página pública.' },
+            { el: '.form-row', title: 'Tipo, precio y duración', text: 'El tipo agrupa el servicio en la lista de precios. La duración define el espacio que ocupa en la agenda.' },
+            { el: '.field:has(#descripcion)', title: 'Descripción', text: 'Qué incluye. Por ejemplo: incluye shampoo, corte y secado.' },
+            { el: 'form .check', title: 'Disponible', text: 'Desmárcalo para ocultarlo sin borrarlo.' },
+            REPLAY
+        ],
+        'empleados': [
+            { el: '.page-head .btn--primary', title: 'Agregar personal', text: 'Registra a cada estilista con su horario y, si quieres, con su propia cuenta.' },
+            { el: '.person', title: 'Tarjeta del estilista', text: 'Su especialidad, cuántos días trabaja, sus próximas citas y el correo con el que entra al sistema.' },
+            { el: '.person__actions', title: 'Editar o desactivar', text: 'Al desactivar a alguien deja de aparecer en la agenda y ya no puede iniciar sesión.' },
+            REPLAY
+        ],
+        'empleado-form': [
+            { el: '.form-stack > .card:first-child', title: 'Datos', text: 'Nombre, contacto y especialidad.' },
+            { el: '.swatches', title: 'Color en la agenda', text: 'Cada estilista tiene su color para distinguir sus citas de un vistazo.' },
+            { el: '[data-tour-step="horario"]', title: 'Horario semanal', text: 'Marca los días que trabaja y su hora de entrada y salida. Solo se podrán agendar citas dentro de este horario.' },
+            { el: '[data-tour-step="acceso"]', title: 'Acceso al sistema', text: 'Opcional. Con una cuenta, el estilista entra y ve solo su propia agenda.' },
+            { el: '.form__actions--bar .btn--primary', title: 'Guardar', text: 'Si algo falta o el horario no cuadra, se marca en rojo qué corregir.' },
+            REPLAY
+        ]
+    };
+
+    var pasos = PASOS[clave];
+    if (!pasos) return;
+
+    var spot, pop, titleEl, textEl, countEl, prevBtn, nextBtn;
+    var activos = [];
+    var indice = 0;
+    var abierto = false;
+    var focoPrevio = null;
+
+    function visible(el) {
+        if (!el) return false;
+        var r = el.getBoundingClientRect();
+        if (r.width === 0 || r.height === 0) return false;
+        if (r.right <= 0 || r.left >= window.innerWidth) return false; // menu lateral oculto en celular
+        return getComputedStyle(el).visibility !== 'hidden';
+    }
+
+    function construir() {
+        spot = document.createElement('div');
+        spot.className = 'tour-spot';
+        spot.setAttribute('aria-hidden', 'true');
+
+        pop = document.createElement('div');
+        pop.className = 'tour-pop';
+        pop.setAttribute('role', 'dialog');
+        pop.setAttribute('aria-modal', 'true');
+        pop.setAttribute('aria-labelledby', 'tour-title');
+        pop.setAttribute('aria-describedby', 'tour-text');
+        pop.innerHTML =
+            '<p class="tour-pop__count" data-count></p>' +
+            '<h2 class="tour-pop__title" id="tour-title"></h2>' +
+            '<p class="tour-pop__text" id="tour-text"></p>' +
+            '<div class="tour-pop__actions">' +
+            '  <button type="button" class="tour-pop__skip" data-skip>Saltar recorrido</button>' +
+            '  <span class="tour-pop__nav">' +
+            '    <button type="button" class="btn btn--sm btn--ghost" data-prev>Anterior</button>' +
+            '    <button type="button" class="btn btn--sm btn--primary" data-next>Siguiente</button>' +
+            '  </span>' +
+            '</div>';
+
+        document.body.appendChild(spot);
+        document.body.appendChild(pop);
+
+        titleEl = pop.querySelector('#tour-title');
+        textEl = pop.querySelector('#tour-text');
+        countEl = pop.querySelector('[data-count]');
+        prevBtn = pop.querySelector('[data-prev]');
+        nextBtn = pop.querySelector('[data-next]');
+
+        pop.querySelector('[data-skip]').addEventListener('click', function () { cerrar(true); });
+        prevBtn.addEventListener('click', function () { ir(indice - 1); });
+        nextBtn.addEventListener('click', function () {
+            if (indice >= activos.length - 1) cerrar(true);
+            else ir(indice + 1);
+        });
+    }
+
+    function abrir() {
+        activos = pasos
+            .map(function (p) { return { paso: p, el: document.querySelector(p.el) }; })
+            .filter(function (x) { return visible(x.el); });
+        if (!activos.length) return;
+
+        if (!pop) construir();
+        focoPrevio = document.activeElement;
+        abierto = true;
+        body.classList.add('tour-open');
+        spot.hidden = false;
+        pop.hidden = false;
+        ir(0);
+    }
+
+    function ir(i) {
+        indice = Math.max(0, Math.min(i, activos.length - 1));
+        var actual = activos[indice];
+
+        titleEl.textContent = actual.paso.title;
+        textEl.textContent = actual.paso.text;
+        countEl.textContent = 'Paso ' + (indice + 1) + ' de ' + activos.length;
+        prevBtn.hidden = indice === 0;
+        nextBtn.textContent = indice === activos.length - 1 ? 'Terminar' : 'Siguiente';
+
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        actual.el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+
+        // Espera a que termine el desplazamiento antes de medir
+        setTimeout(posicionar, reduce ? 0 : 320);
+        nextBtn.focus({ preventScroll: true });
+    }
+
+    function posicionar() {
+        if (!abierto) return;
+        var el = activos[indice].el;
+        var r = el.getBoundingClientRect();
+        var pad = 8;
+
+        spot.style.top = (r.top - pad) + 'px';
+        spot.style.left = (r.left - pad) + 'px';
+        spot.style.width = (r.width + pad * 2) + 'px';
+        spot.style.height = (r.height + pad * 2) + 'px';
+
+        // En celular la tarjeta va fija abajo (ver CSS)
+        if (window.innerWidth <= 600) {
+            pop.style.top = pop.style.left = '';
+            return;
+        }
+
+        var pw = pop.offsetWidth;
+        var ph = pop.offsetHeight;
+        var margen = 16;
+        var top;
+
+        if (r.bottom + pad + margen + ph <= window.innerHeight) {
+            top = r.bottom + pad + margen;              // debajo
+        } else if (r.top - pad - margen - ph >= 0) {
+            top = r.top - pad - margen - ph;            // arriba
+        } else {
+            top = window.innerHeight - ph - margen;     // elemento muy alto: abajo de la pantalla
+        }
+
+        var left = r.left + r.width / 2 - pw / 2;
+        left = Math.max(margen, Math.min(left, window.innerWidth - pw - margen));
+
+        pop.style.top = top + 'px';
+        pop.style.left = left + 'px';
+    }
+
+    function cerrar(guardar) {
+        if (!abierto) return;
+        abierto = false;
+        body.classList.remove('tour-open');
+        spot.hidden = true;
+        pop.hidden = true;
+        if (focoPrevio && focoPrevio.focus) focoPrevio.focus({ preventScroll: true });
+
+        if (guardar && body.dataset.tourPending === '1') {
+            body.dataset.tourPending = '0';
+            var datos = new URLSearchParams();
+            datos.append('_csrf', body.dataset.csrf);
+            fetch(body.dataset.tourUrl, {
+                method: 'POST',
+                body: datos,
+                credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'fetch' }
+            }).catch(function () { /* si falla, se volvera a mostrar la proxima vez */ });
+        }
+    }
+
+    /* Teclado: Escape salta, flechas navegan, Tab se queda dentro de la tarjeta */
+    document.addEventListener('keydown', function (ev) {
+        if (!abierto) return;
+        if (ev.key === 'Escape') { ev.preventDefault(); cerrar(true); }
+        else if (ev.key === 'ArrowRight') { nextBtn.click(); }
+        else if (ev.key === 'ArrowLeft' && indice > 0) { ir(indice - 1); }
+        else if (ev.key === 'Tab') {
+            var focos = Array.prototype.filter.call(pop.querySelectorAll('button'), function (b) { return !b.hidden; });
+            var primero = focos[0], ultimo = focos[focos.length - 1];
+            if (ev.shiftKey && document.activeElement === primero) { ev.preventDefault(); ultimo.focus(); }
+            else if (!ev.shiftKey && document.activeElement === ultimo) { ev.preventDefault(); primero.focus(); }
+        }
+    });
+
+    window.addEventListener('resize', posicionar);
+    window.addEventListener('scroll', posicionar, { passive: true });
+
+    var replay = document.querySelector('[data-tour-replay]');
+    if (replay) replay.addEventListener('click', abrir);
+
+    if (body.dataset.tourPending === '1') {
+        // Deja que la pagina termine de pintarse
+        setTimeout(abrir, 450);
+    }
+})();

@@ -8,22 +8,20 @@
 return [
 
     'app' => [
-        'name'         => 'Barberia',
-        // URL base sin diagonal final. Local: http://localhost/barberia
+        'name'         => 'Hair +',
+        // URL base sin diagonal final.
+        // Local con "php -S localhost:8000": http://localhost:8000
         // InfinityFree: https://tusitio.infinityfreeapp.com
-        'url'          => 'http://localhost/barberia',
+        'url'          => 'http://localhost:8000',
         'timezone'     => 'America/Mexico_City',
         'debug'        => true,
-        'session_name' => 'barberia_sid',
+        'session_name' => 'hairplus_sid',
     ],
 
+    // SQLite: un solo archivo. La carpeta database/ debe tener permisos
+    // de escritura porque SQLite crea ahi su archivo temporal de diario.
     'db' => [
-        'host'     => '127.0.0.1',
-        'port'     => 3306,
-        'name'     => 'barberia',
-        'user'     => 'root',
-        'password' => '',
-        'charset'  => 'utf8mb4',
+        'path' => 'database/barberia.sqlite',
     ],
 
     // SMTP externo (InfinityFree no ofrece servicio de correo propio).
@@ -35,7 +33,7 @@ return [
         'username'   => 'tu-correo@gmail.com',
         'password'   => 'contrasena-de-aplicacion',
         'from_email' => 'tu-correo@gmail.com',
-        'from_name'  => 'Barberia',
+        'from_name'  => 'Hair +',
     ],
 
     'reminders' => [

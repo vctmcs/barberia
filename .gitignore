@@ -1,6 +1,12 @@
 # Configuracion con credenciales
 /config/config.php
 
+# Base de datos local
+/database/*.sqlite
+/database/*.sqlite-journal
+/database/*.sqlite-wal
+/database/*.sqlite-shm
+
 # Dependencias de Composer
 /vendor/
 
@@ -19,3 +25,6 @@ desktop.ini
 .vscode/
 .idea/
 *.log
+
+# Carpeta temporal del asistente
+/Claude outputs/

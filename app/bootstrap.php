@@ -44,6 +44,8 @@ if (is_file($vendor)) {
     require $vendor;
 }
 
+$config['sitio'] = is_file(BASE_PATH . '/config/sitio.php') ? require BASE_PATH . '/config/sitio.php' : [];
+
 App\Core\Config::load($config);
 
 require BASE_PATH . '/app/helpers.php';

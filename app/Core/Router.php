@@ -71,7 +71,9 @@ final class Router
     {
         $path = parse_url($uri, PHP_URL_PATH) ?: '/';
 
-        $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+        // La subcarpeta se toma de app.url y no de SCRIPT_NAME, que cambia
+        // segun el servidor (php -S lo altera en rutas con extension).
+        $base = rtrim((string) parse_url((string) Config::get('app.url'), PHP_URL_PATH), '/');
         if ($base !== '' && str_starts_with($path, $base)) {
             $path = substr($path, strlen($base));
         }
