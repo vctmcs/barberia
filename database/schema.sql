@@ -109,6 +109,16 @@ CREATE TABLE IF NOT EXISTS recorridos_vistos (
     PRIMARY KEY (usuario_id, clave)
 );
 
+-- Intentos fallidos de inicio de sesion (limite por IP y correo)
+CREATE TABLE IF NOT EXISTS login_intentos (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip         TEXT NOT NULL,
+    email      TEXT NOT NULL,
+    creado_en  TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_login_ip ON login_intentos (ip, creado_en);
+
 CREATE INDEX IF NOT EXISTS idx_citas_fecha       ON citas (fecha_hora);
 CREATE INDEX IF NOT EXISTS idx_citas_empleado    ON citas (empleado_id, fecha_hora);
 CREATE INDEX IF NOT EXISTS idx_citas_cliente     ON citas (cliente_id);
@@ -118,4 +128,4 @@ CREATE INDEX IF NOT EXISTS idx_clientes_nombre   ON clientes (nombre);
 
 -- Version del esquema. Database.php vuelve a aplicar este archivo
 -- (todo es IF NOT EXISTS) cuando la base tiene una version menor.
-PRAGMA user_version = 2;
+PRAGMA user_version = 3;

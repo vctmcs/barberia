@@ -70,6 +70,51 @@ if ($config['app']['debug']) {
     ini_set('error_log', BASE_PATH . '/storage/logs/php-error.log');
 }
 
+/*
+ * Errores no atrapados: se registran en storage/logs y se muestra una
+ * pagina 500 sin detalles (con detalles solo cuando debug esta activo).
+ */
+set_exception_handler(static function (\Throwable $e) use ($config): void {
+    error_log(sprintf('[%s] %s en %s:%d', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()));
+
+    if (PHP_SAPI === 'cli') {
+        fwrite(STDERR, $e->getMessage() . PHP_EOL);
+        exit(1);
+    }
+
+    if (!headers_sent()) {
+        http_response_code(500);
+    }
+
+    if ($config['app']['debug']) {
+        echo '<pre style="padding:1rem;white-space:pre-wrap">' . e($e->getMessage() . "\n\n" . $e->getTraceAsString()) . '</pre>';
+        return;
+    }
+
+    try {
+        (new App\Core\View())->render('errors/500', ['title' => 'Error'], 'layouts/blank');
+    } catch (\Throwable) {
+        echo 'Ocurrió un error. Intenta de nuevo en unos minutos.';
+    }
+});
+
+/*
+ * Encabezados de seguridad para el navegador.
+ * La politica de contenido solo permite scripts, estilos, fuentes e
+ * imagenes del propio sitio; los atributos style en linea si se
+ * permiten porque las vistas los usan para colores dinamicos.
+ * form-action incluye wa.me porque el recordatorio redirige a WhatsApp.
+ */
+if (PHP_SAPI !== 'cli' && !headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: geolocation=(), microphone=(), payment=()');
+    header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+        . "img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; "
+        . "frame-ancestors 'self'; form-action 'self' https://wa.me https://api.whatsapp.com");
+}
+
 if (PHP_SAPI !== 'cli' && session_status() === PHP_SESSION_NONE) {
     session_name($config['app']['session_name']);
     session_set_cookie_params([

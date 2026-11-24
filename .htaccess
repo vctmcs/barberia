@@ -13,6 +13,9 @@ Options -Indexes
     RewriteRule (^|/)\. - [F,L]
     RewriteRule ^(composer\.(json|lock)|README\.md)$ - [F,L]
 
+    # Bloquear por extension archivos sensibles en cualquier carpeta
+    RewriteRule \.(sqlite|sqlite-journal|sql|log|lock|ini|env|bak)$ - [F,L,NC]
+
     # Servir directamente archivos existentes de public/
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^public/ - [L]

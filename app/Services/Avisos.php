@@ -117,17 +117,21 @@ final class Avisos
      */
     public function conteo(): int
     {
-        $ahora = date('Y-m-d H:i:s');
-        $filtro = $this->empleadoId !== null ? ' AND c.empleado_id = ' . (int) $this->empleadoId : '';
+        $filtro = $this->empleadoId !== null ? ' AND c.empleado_id = :emp' : '';
+        $emp = $this->empleadoId !== null ? ['emp' => $this->empleadoId] : [];
 
-        $sinCerrar = (int) $this->db->query(
-            "SELECT COUNT(*) FROM citas c WHERE c.estado = 'programada' AND c.fecha_fin < '{$ahora}'{$filtro}"
-        )->fetchColumn();
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*) FROM citas c WHERE c.estado = 'programada' AND c.fecha_fin < :ahora" . $filtro
+        );
+        $stmt->execute(['ahora' => date('Y-m-d H:i:s')] + $emp);
+        $sinCerrar = (int) $stmt->fetchColumn();
 
-        $sinHistorial = (int) $this->db->query(
+        $stmt = $this->db->prepare(
             "SELECT COUNT(*) FROM citas c LEFT JOIN historial h ON h.cita_id = c.id
-              WHERE c.estado = 'atendida' AND h.id IS NULL{$filtro}"
-        )->fetchColumn();
+              WHERE c.estado = 'atendida' AND h.id IS NULL" . $filtro
+        );
+        $stmt->execute($emp);
+        $sinHistorial = (int) $stmt->fetchColumn();
 
         $stmt = $this->db->prepare(
             "SELECT COUNT(*) FROM clientes WHERE activo = 1 AND strftime('%m-%d', fecha_nacimiento) = ?"

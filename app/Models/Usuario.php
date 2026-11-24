@@ -31,6 +31,13 @@ final class Usuario extends Model
         return $stmt->fetch() ?: null;
     }
 
+    public function emailUsado(string $email, int $excepto): bool
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM usuarios WHERE email = ? AND id <> ?');
+        $stmt->execute([mb_strtolower(trim($email)), $excepto]);
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
     public function updatePassword(int $id, string $password): void
     {
         $this->db->prepare('UPDATE usuarios SET password_hash = ? WHERE id = ?')

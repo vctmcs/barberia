@@ -12,7 +12,7 @@ use PDO;
 final class Database
 {
     /** Debe coincidir con el PRAGMA user_version al final de schema.sql */
-    public const SCHEMA_VERSION = 2;
+    public const SCHEMA_VERSION = 3;
 
     private static ?PDO $pdo = null;
 

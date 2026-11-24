@@ -18,7 +18,7 @@ final class AuthController extends Controller
 
         $this->view('auth/login', [
             'title'    => 'Iniciar sesión',
-            'bloqueo'  => (int) ceil(Auth::bloqueoRestante() / 60),
+            'bloqueo'  => Auth::bloqueoRestante(),
         ], 'layouts/blank');
     }
 
@@ -29,17 +29,19 @@ final class AuthController extends Controller
         $email    = (string) $this->input('email', '');
         $password = (string) ($_POST['password'] ?? '');
 
-        if (Auth::bloqueoRestante() > 0) {
-            $this->redirect('/login');
-        }
-
         if ($email === '' || $password === '') {
             $this->back('/login', ['login' => 'Escribe tu correo y tu contraseña.'], ['email' => $email]);
         }
 
+        $espera = Auth::bloqueoRestante($email);
+        if ($espera > 0) {
+            $this->back('/login', ['login' => "Demasiados intentos fallidos. Vuelve a intentar en {$espera} min."], ['email' => $email]);
+        }
+
         if (!Auth::attempt($email, $password)) {
-            $mensaje = Auth::bloqueoRestante() > 0
-                ? 'Demasiados intentos. Espera unos minutos para volver a intentar.'
+            $espera = Auth::bloqueoRestante($email);
+            $mensaje = $espera > 0
+                ? "Demasiados intentos fallidos. Vuelve a intentar en {$espera} min."
                 : 'El correo o la contraseña no coinciden.';
             $this->back('/login', ['login' => $mensaje], ['email' => $email]);
         }

@@ -16,6 +16,7 @@ abstract class Controller
         $data['csrf']    = Session::csrfToken();
         $data['authUser'] = Auth::user();
         $data['isAdmin'] = Auth::isAdmin();
+        $data['passwordDemo'] = Auth::check() && Auth::usaPasswordDemo();
         if ($layout === 'layouts/main' && Auth::check()) {
             $data['avisosCount'] = (new \App\Services\Avisos(Auth::isAdmin() ? null : Auth::empleadoId()))->conteo();
         }
@@ -67,7 +68,9 @@ abstract class Controller
     protected function requireAuth(): void
     {
         if (!Auth::check()) {
-            Session::flash('info', 'Inicia sesión para continuar.');
+            if (!Session::get('_flash')) {
+                Session::flash('info', 'Inicia sesión para continuar.');
+            }
             $this->redirect('/login');
         }
     }

@@ -140,6 +140,35 @@ El plan gratuito de InfinityFree no ofrece tareas programadas y bloquea los serv
 
 El panel de Notificaciones muestra la cola, los últimos envíos con su error si fallaron y un botón para enviar los pendientes en ese momento.
 
+## Seguridad
+
+- **Contraseñas** con `password_hash` (bcrypt) y rehash automático si cambia el algoritmo por defecto.
+- **Inicio de sesión** con límite de intentos guardado en la base: 5 fallos por IP y correo, o 20 por IP, bloquean 15 minutos aunque se borren las cookies. El tiempo de respuesta es igual exista o no el correo, para no revelar qué cuentas existen.
+- **Sesión** con cookie `HttpOnly` y `SameSite=Lax` (y `Secure` con HTTPS), identificador regenerado al entrar y al cambiar la contraseña, y cierre por inactividad configurable (`app.session_idle`).
+- **CSRF**: todos los formularios y peticiones `POST` llevan token.
+- **Autorización** en cada controlador: el estilista solo ve y modifica su propia agenda e historial; servicios, empleados y eliminaciones son del administrador.
+- **SQL** solo con consultas preparadas de PDO; los modelos limitan las columnas que se pueden escribir.
+- **XSS**: toda salida de datos en las vistas pasa por `htmlspecialchars`.
+- **Fotos**: se valida el tipo real con `finfo`, se reescalan con GD (lo que elimina metadatos como la ubicación), se guardan con nombre aleatorio fuera de la carpeta pública y solo se entregan a usuarios con sesión.
+- **Encabezados**: Content-Security-Policy (solo scripts propios), `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy`.
+- **Servidor**: `.htaccess` bloquea carpetas internas, archivos ocultos y extensiones sensibles (`.sqlite`, `.sql`, `.log`). Los errores se registran en `storage/logs` y el visitante ve una página 500 sin detalles.
+- **Contraseña de prueba**: si alguien entra con la contraseña de los datos de prueba, el panel muestra un aviso hasta que la cambie en "Mi cuenta".
+
+## Antes de publicar
+
+1. **Base de datos**: crear la de producción con `php database/instalar.php --vacia` (solo el administrador) o con datos de prueba si es una demo para el portafolio.
+2. **Contraseña**: entrar como administrador y cambiarla en "Mi cuenta" (nombre en la barra superior).
+3. **`config/config.php`**:
+   - `app.url` con la dirección real y `https://`.
+   - `app.debug` en `false`.
+   - `reminders.cron_token`: un valor largo y aleatorio, por ejemplo el resultado de `php -r "echo bin2hex(random_bytes(24));"`. Mientras tenga el valor de ejemplo, la URL de tareas queda desactivada.
+   - `mail`: opcional; sin datos reales el sistema simplemente no envía correos.
+4. **`config/sitio.php`**: datos reales del negocio y fotos reales en `public/img/galeria/`.
+5. **Subir a `htdocs/` por FTP**: `index.php`, `.htaccess` y las carpetas `app/`, `config/`, `cron/`, `database/` (con el archivo `.sqlite`), `lib/`, `public/` y `storage/`. No hace falta subir `.git/`, `README.md` ni `composer.json`.
+6. **Permisos** de escritura en `database/` y `storage/`.
+7. **HTTPS**: activar el certificado SSL gratuito desde el panel de InfinityFree.
+8. **Comprobar** que estas direcciones responden 403: `/config/config.php`, `/database/barberia.sqlite`, `/storage/logs/` y `/lib/PHPMailer/PHPMailer.php`.
+
 ## Créditos
 
 FullCalendar 6 (licencia MIT), incluido en `public/vendor/fullcalendar/`.

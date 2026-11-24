@@ -34,10 +34,10 @@
 
             <div class="topbar__user">
                 <span class="avatar" style="--avatar-color: <?= e($authUser['color'] ?? '#2de2e6') ?>"><?= e(iniciales($authUser['nombre'])) ?></span>
-                <span class="topbar__who">
+                <a class="topbar__who" href="<?= url('/cuenta') ?>" title="Mi cuenta">
                     <strong><?= e($authUser['nombre']) ?></strong>
                     <small><?= $isAdmin ? 'Administrador' : 'Barbero / estilista' ?></small>
-                </span>
+                </a>
                 <form method="post" action="<?= url('/logout') ?>">
                     <input type="hidden" name="_csrf" value="<?= e($csrf) ?>">
                     <button class="btn btn--ghost btn--sm" type="submit">Cerrar sesión</button>
@@ -47,6 +47,11 @@
 
         <main id="contenido" class="content" tabindex="-1">
             <?php require BASE_PATH . '/app/Views/partials/flash.php'; ?>
+            <?php if ($passwordDemo): ?>
+            <p class="alert alert--warn" role="alert">
+                Entraste con la contraseña de los datos de prueba. <a href="<?= url('/cuenta') ?>">Cámbiala ahora</a> antes de publicar el sitio.
+            </p>
+            <?php endif; ?>
             <?= $content ?>
         </main>
     </div>

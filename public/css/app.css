@@ -241,6 +241,7 @@ svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-
 .alert--success { border-left-color: var(--ok); }
 .alert--error   { border-left-color: var(--danger); }
 .alert--info    { border-left-color: var(--cyan); }
+.alert--warn    { border-left-color: var(--sun); background: rgba(255, 158, 61, .08); }
 
 .alert__close {
     display: grid; place-items: center; padding: var(--sp-1);
@@ -1415,6 +1416,12 @@ a.timeline__item:hover { background: var(--panel-2); }
     .people-list__item { flex-wrap: wrap; }
     .people-list__actions { width: 100%; justify-content: flex-end; }
 }
+
+/* Mi cuenta */
+.field--short-wide { max-width: 26rem; }
+a.topbar__who { color: inherit; text-decoration: none; }
+a.topbar__who:hover strong { color: var(--pink-soft); }
+.alert a { color: var(--cyan); font-weight: 600; }
 
 /* --------------------------------------------------------------------------
    Recorrido guiado

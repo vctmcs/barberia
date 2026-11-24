@@ -12,6 +12,7 @@
 
 use App\Controllers\ArchivoController;
 use App\Controllers\CitaController;
+use App\Controllers\CuentaController;
 use App\Controllers\AuthController;
 use App\Controllers\ClienteController;
 use App\Controllers\DashboardController;
@@ -29,6 +30,10 @@ $router->get('/', [HomeController::class, 'index']);
 $router->get('/login', [AuthController::class, 'showLogin']);
 $router->post('/login', [AuthController::class, 'login']);
 $router->post('/logout', [AuthController::class, 'logout']);
+
+/* Mi cuenta */
+$router->get('/cuenta', [CuentaController::class, 'edit']);
+$router->post('/cuenta', [CuentaController::class, 'update']);
 
 /* Dashboard */
 $router->get('/dashboard', [DashboardController::class, 'index']);

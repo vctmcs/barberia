@@ -16,6 +16,8 @@ return [
         'timezone'     => 'America/Mexico_City',
         'debug'        => true,
         'session_name' => 'hairplus_sid',
+        // Minutos sin actividad antes de cerrar la sesion
+        'session_idle' => 120,
     ],
 
     // SQLite: un solo archivo. La carpeta database/ debe tener permisos

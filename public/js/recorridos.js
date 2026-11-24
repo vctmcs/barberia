@@ -105,6 +105,12 @@
             { el: '.form__actions--bar .btn--primary', title: 'Guardar', text: 'Si ahora no hay tiempo, puedes hacerlo después desde la cita.' },
             REPLAY
         ],
+        'cuenta': [
+            { el: '[data-tour-step="datos"]', title: 'Tus datos', text: 'Tu nombre aparece en la barra superior y, si eres estilista, en la agenda. El correo es con el que inicias sesión.' },
+            { el: '[data-tour-step="password"]', title: 'Contraseña', text: 'Cámbiala cuando quieras. Si alguien más la conoce, hazlo de inmediato.' },
+            { el: '[data-tour-step="actual"]', title: 'Confirmación', text: 'Para cambiar el correo o la contraseña te pedimos la actual, así nadie puede cambiarla si dejas la sesión abierta.' },
+            REPLAY
+        ],
         'servicios': [
             { el: '.page-head .btn--primary', title: 'Agregar un servicio', text: 'Todo lo que se puede agendar: cortes, color, tratamientos, alaciados y split ender.' },
             { el: '.filters', title: 'Filtrar', text: 'Busca por nombre o muestra solo un tipo de servicio.' },
